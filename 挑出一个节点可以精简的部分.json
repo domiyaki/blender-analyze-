@@ -48,3 +48,19 @@
   "inputs": [...],   // 建议精简：保留 identifier/socket_type +（未连接时）default_value
   "outputs": [...]   // 建议精简：保留 identifier/socket_type 即可
 }
+
+
+
+
+/*
+
+inputs/outputs 里通常也包含 enabled/hide/is_linked。如果你的目标是“AI 快速理解语义”，这些都可以删：
+
+is_linked 可从 links 反推
+
+enabled/hide 是 UI 状态
+
+location_absolute 如果你真要保留，建议导出成数组更好处理："location": [-203.3417, -302.2803]，不要用字符串 "<Vector (...)>"。
+
+
+*/
