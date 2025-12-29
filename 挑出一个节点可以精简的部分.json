@@ -1,0 +1,50 @@
+{
+  "id": 7,                           // 保留：稳定引用（links 用）
+  "name": "Vector Math.002",         // 建议保留：人类可读定位；AI 输出解释也更友好
+  "type": "ShaderNodeVectorMath",    // 保留：节点类型（语义类别）
+
+  "props": {
+    "location_absolute": "<Vector (-203.3417, -302.2803)>", 
+    // 可删：纯 UI 布局信息；除非你要复原节点在画布中的位置/分区
+
+    "warning_propagation": "ALL",
+    // 可删：UI/提示系统相关，不影响计算语义
+
+    "use_custom_color": false,
+    // 可删：UI 显示相关
+
+    "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+    // 可删：UI 显示相关（节点颜色）
+
+    "show_options": true,
+    "show_preview": false,
+    "show_texture": false,
+    // 可删：UI 展示开关，不影响计算
+
+    "bl_idname": "ShaderNodeVectorMath",
+    // 可删（或二选一）：与外层 "type" 重复；只留 type 更干净
+
+    "bl_label": "Vector Math",
+    // 可删：UI 名称（tooltip/标题），对语义贡献很小
+
+    "bl_description": "Perform vector math operation",
+    // 可删：tooltip 描述文本；冗余且可能随版本/语言变化
+
+    "bl_icon": "NONE",
+    // 可删：UI 图标信息
+
+    "bl_width_default": 140.0,
+    "bl_width_min": 100.0,
+    "bl_width_max": 700.0,
+    "bl_height_default": 100.0,
+    "bl_height_min": 30.0,
+    "bl_height_max": 30.0,
+    // 可删：UI 尺寸/约束，不影响计算；会显著膨胀 JSON
+
+    "operation": "SUBTRACT"
+    // 保留：核心语义参数，决定该 Vector Math 做什么运算
+  },
+
+  "inputs": [...],   // 建议精简：保留 identifier/socket_type +（未连接时）default_value
+  "outputs": [...]   // 建议精简：保留 identifier/socket_type 即可
+}
