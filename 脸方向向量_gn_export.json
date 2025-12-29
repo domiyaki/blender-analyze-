@@ -1,0 +1,2069 @@
+{
+  "node_tree_name": "脸方向向量",
+  "nodes": [
+    {
+      "id": 0,
+      "name": "帧",
+      "label": "headForward",
+      "type": "NodeFrame",
+      "props": {
+        "location_absolute": "<Vector (736.9941, -100.4101)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "NodeFrame",
+        "bl_label": "Frame",
+        "bl_description": "Collect related nodes together in a common area. Useful for organization when the re-usability of a node group is not required",
+        "bl_icon": "NONE",
+        "bl_width_default": 150.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 3.4028234663852886e+38,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "shrink": true,
+        "label_size": 20
+      },
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "id": 1,
+      "name": "帧.001",
+      "label": "headRight",
+      "type": "NodeFrame",
+      "props": {
+        "location_absolute": "<Vector (736.3193, -220.2616)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "NodeFrame",
+        "bl_label": "Frame",
+        "bl_description": "Collect related nodes together in a common area. Useful for organization when the re-usability of a node group is not required",
+        "bl_icon": "NONE",
+        "bl_width_default": 150.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 3.4028234663852886e+38,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "shrink": true,
+        "label_size": 20
+      },
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "id": 2,
+      "name": "帧.002",
+      "label": "headUp",
+      "type": "NodeFrame",
+      "props": {
+        "location_absolute": "<Vector (738.4755, -314.3775)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "NodeFrame",
+        "bl_label": "Frame",
+        "bl_description": "Collect related nodes together in a common area. Useful for organization when the re-usability of a node group is not required",
+        "bl_icon": "NONE",
+        "bl_width_default": 150.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 3.4028234663852886e+38,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "shrink": true,
+        "label_size": 20
+      },
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "id": 3,
+      "name": "组输入",
+      "label": "",
+      "type": "NodeGroupInput",
+      "props": {
+        "location_absolute": "<Vector (-758.5764, 20.3171)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "NodeGroupInput",
+        "bl_label": "Group Input",
+        "bl_description": "Expose connected data from inside a node group as inputs to its interface",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 80.0,
+        "bl_width_max": 400.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0
+      },
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "几何数据",
+          "identifier": "Input_0",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        },
+        {
+          "name": "HC",
+          "identifier": "Socket_0",
+          "socket_type": "NodeSocketObject",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": null
+        },
+        {
+          "name": "HF",
+          "identifier": "Socket_2",
+          "socket_type": "NodeSocketObject",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": null
+        },
+        {
+          "name": "HR",
+          "identifier": "Socket_3",
+          "socket_type": "NodeSocketObject",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": null
+        },
+        {
+          "name": "only need HeadForward",
+          "identifier": "Socket_4",
+          "socket_type": "NodeSocketBool",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": false
+        },
+        {
+          "name": "",
+          "identifier": "__extend__",
+          "socket_type": "NodeSocketVirtual",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "物体信息.001",
+      "label": "",
+      "type": "GeometryNodeObjectInfo",
+      "props": {
+        "location_absolute": "<Vector (-452.9584, -314.8973)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "GeometryNodeObjectInfo",
+        "bl_label": "Object Info",
+        "bl_description": "Retrieve information from an object",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "transform_space": "ORIGINAL"
+      },
+      "inputs": [
+        {
+          "name": "Object",
+          "identifier": "Object",
+          "socket_type": "NodeSocketObject",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": null
+        },
+        {
+          "name": "As Instance",
+          "identifier": "As Instance",
+          "socket_type": "NodeSocketBool",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": false
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Transform",
+          "identifier": "Transform",
+          "socket_type": "NodeSocketMatrix",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false
+        },
+        {
+          "name": "Location",
+          "identifier": "Location",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Rotation",
+          "identifier": "Rotation",
+          "socket_type": "NodeSocketRotation",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": "<Euler (x=0.0000, y=0.0000, z=0.0000), order='XYZ'>"
+        },
+        {
+          "name": "Scale",
+          "identifier": "Scale",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Geometry",
+          "identifier": "Geometry",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "物体信息",
+      "label": "",
+      "type": "GeometryNodeObjectInfo",
+      "props": {
+        "location_absolute": "<Vector (-449.5902, -75.2667)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "GeometryNodeObjectInfo",
+        "bl_label": "Object Info",
+        "bl_description": "Retrieve information from an object",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "transform_space": "ORIGINAL"
+      },
+      "inputs": [
+        {
+          "name": "Object",
+          "identifier": "Object",
+          "socket_type": "NodeSocketObject",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": null
+        },
+        {
+          "name": "As Instance",
+          "identifier": "As Instance",
+          "socket_type": "NodeSocketBool",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": false
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Transform",
+          "identifier": "Transform",
+          "socket_type": "NodeSocketMatrix",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false
+        },
+        {
+          "name": "Location",
+          "identifier": "Location",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Rotation",
+          "identifier": "Rotation",
+          "socket_type": "NodeSocketRotation",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": "<Euler (x=0.0000, y=0.0000, z=0.0000), order='XYZ'>"
+        },
+        {
+          "name": "Scale",
+          "identifier": "Scale",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Geometry",
+          "identifier": "Geometry",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "物体信息.002",
+      "label": "",
+      "type": "GeometryNodeObjectInfo",
+      "props": {
+        "location_absolute": "<Vector (-449.2301, -536.7093)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "GeometryNodeObjectInfo",
+        "bl_label": "Object Info",
+        "bl_description": "Retrieve information from an object",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "transform_space": "ORIGINAL"
+      },
+      "inputs": [
+        {
+          "name": "Object",
+          "identifier": "Object",
+          "socket_type": "NodeSocketObject",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": null
+        },
+        {
+          "name": "As Instance",
+          "identifier": "As Instance",
+          "socket_type": "NodeSocketBool",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": false
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Transform",
+          "identifier": "Transform",
+          "socket_type": "NodeSocketMatrix",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false
+        },
+        {
+          "name": "Location",
+          "identifier": "Location",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Rotation",
+          "identifier": "Rotation",
+          "socket_type": "NodeSocketRotation",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": "<Euler (x=0.0000, y=0.0000, z=0.0000), order='XYZ'>"
+        },
+        {
+          "name": "Scale",
+          "identifier": "Scale",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Geometry",
+          "identifier": "Geometry",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Vector Math.002",
+      "label": "",
+      "type": "ShaderNodeVectorMath",
+      "props": {
+        "location_absolute": "<Vector (-203.3417, -302.2803)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "ShaderNodeVectorMath",
+        "bl_label": "Vector Math",
+        "bl_description": "Perform vector math operation",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "operation": "SUBTRACT"
+      },
+      "inputs": [
+        {
+          "name": "Vector",
+          "identifier": "Vector",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Vector",
+          "identifier": "Vector_001",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Vector",
+          "identifier": "Vector_002",
+          "socket_type": "NodeSocketVector",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Scale",
+          "identifier": "Scale",
+          "socket_type": "NodeSocketFloat",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "identifier": "Vector",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Value",
+          "identifier": "Value",
+          "socket_type": "NodeSocketFloat",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": 0.0
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Vector Math.003",
+      "label": "",
+      "type": "ShaderNodeVectorMath",
+      "props": {
+        "location_absolute": "<Vector (5.7289, -289.4299)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "ShaderNodeVectorMath",
+        "bl_label": "Vector Math",
+        "bl_description": "Perform vector math operation",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "operation": "NORMALIZE"
+      },
+      "inputs": [
+        {
+          "name": "Vector",
+          "identifier": "Vector",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Vector",
+          "identifier": "Vector_001",
+          "socket_type": "NodeSocketVector",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Vector",
+          "identifier": "Vector_002",
+          "socket_type": "NodeSocketVector",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Scale",
+          "identifier": "Scale",
+          "socket_type": "NodeSocketFloat",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "identifier": "Vector",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Value",
+          "identifier": "Value",
+          "socket_type": "NodeSocketFloat",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": 0.0
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Vector Math",
+      "label": "",
+      "type": "ShaderNodeVectorMath",
+      "props": {
+        "location_absolute": "<Vector (-209.6446, -147.0116)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "ShaderNodeVectorMath",
+        "bl_label": "Vector Math",
+        "bl_description": "Perform vector math operation",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "operation": "SUBTRACT"
+      },
+      "inputs": [
+        {
+          "name": "Vector",
+          "identifier": "Vector",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Vector",
+          "identifier": "Vector_001",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Vector",
+          "identifier": "Vector_002",
+          "socket_type": "NodeSocketVector",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Scale",
+          "identifier": "Scale",
+          "socket_type": "NodeSocketFloat",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "identifier": "Vector",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Value",
+          "identifier": "Value",
+          "socket_type": "NodeSocketFloat",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": 0.0
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Vector Math.001",
+      "label": "",
+      "type": "ShaderNodeVectorMath",
+      "props": {
+        "location_absolute": "<Vector (12.7243, -169.8470)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "ShaderNodeVectorMath",
+        "bl_label": "Vector Math",
+        "bl_description": "Perform vector math operation",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "operation": "NORMALIZE"
+      },
+      "inputs": [
+        {
+          "name": "Vector",
+          "identifier": "Vector",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Vector",
+          "identifier": "Vector_001",
+          "socket_type": "NodeSocketVector",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Vector",
+          "identifier": "Vector_002",
+          "socket_type": "NodeSocketVector",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Scale",
+          "identifier": "Scale",
+          "socket_type": "NodeSocketFloat",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "identifier": "Vector",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Value",
+          "identifier": "Value",
+          "socket_type": "NodeSocketFloat",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": 0.0
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Vector Math.004",
+      "label": "",
+      "type": "ShaderNodeVectorMath",
+      "props": {
+        "location_absolute": "<Vector (326.5235, -410.1191)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "ShaderNodeVectorMath",
+        "bl_label": "Vector Math",
+        "bl_description": "Perform vector math operation",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "operation": "CROSS_PRODUCT"
+      },
+      "inputs": [
+        {
+          "name": "Vector",
+          "identifier": "Vector",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Vector",
+          "identifier": "Vector_001",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Vector",
+          "identifier": "Vector_002",
+          "socket_type": "NodeSocketVector",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Scale",
+          "identifier": "Scale",
+          "socket_type": "NodeSocketFloat",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "identifier": "Vector",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Value",
+          "identifier": "Value",
+          "socket_type": "NodeSocketFloat",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": 0.0
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Vector Math.005",
+      "label": "",
+      "type": "ShaderNodeVectorMath",
+      "props": {
+        "location_absolute": "<Vector (562.8680, -417.3639)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "ShaderNodeVectorMath",
+        "bl_label": "Vector Math",
+        "bl_description": "Perform vector math operation",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "operation": "NORMALIZE"
+      },
+      "inputs": [
+        {
+          "name": "Vector",
+          "identifier": "Vector",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Vector",
+          "identifier": "Vector_001",
+          "socket_type": "NodeSocketVector",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Vector",
+          "identifier": "Vector_002",
+          "socket_type": "NodeSocketVector",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Scale",
+          "identifier": "Scale",
+          "socket_type": "NodeSocketFloat",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "identifier": "Vector",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Value",
+          "identifier": "Value",
+          "socket_type": "NodeSocketFloat",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": 0.0
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "转接点",
+      "label": "",
+      "type": "NodeReroute",
+      "props": {
+        "location_absolute": "<Vector (770.8275, -141.0434)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "NodeReroute",
+        "bl_label": "Reroute",
+        "bl_description": "A single-socket organization tool that supports one input and multiple outputs",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "socket_idname": "NodeSocketVector"
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "identifier": "Input",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "identifier": "Output",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "存储已命名属性",
+      "label": "",
+      "type": "GeometryNodeStoreNamedAttribute",
+      "props": {
+        "location_absolute": "<Vector (1464.8512, 66.1367)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "GeometryNodeStoreNamedAttribute",
+        "bl_label": "Store Named Attribute",
+        "bl_description": "Store the result of a field on a geometry as an attribute with the specified name",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "data_type": "FLOAT_VECTOR",
+        "domain": "POINT"
+      },
+      "inputs": [
+        {
+          "name": "Geometry",
+          "identifier": "Geometry",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        },
+        {
+          "name": "Selection",
+          "identifier": "Selection",
+          "socket_type": "NodeSocketBool",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": true
+        },
+        {
+          "name": "Name",
+          "identifier": "Name",
+          "socket_type": "NodeSocketString",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": "headForward"
+        },
+        {
+          "name": "Value",
+          "identifier": "Value",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Geometry",
+          "identifier": "Geometry",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "转接点.001",
+      "label": "",
+      "type": "NodeReroute",
+      "props": {
+        "location_absolute": "<Vector (770.1526, -260.8949)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "NodeReroute",
+        "bl_label": "Reroute",
+        "bl_description": "A single-socket organization tool that supports one input and multiple outputs",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "socket_idname": "NodeSocketVector"
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "identifier": "Input",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "identifier": "Output",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "存储已命名属性.001",
+      "label": "",
+      "type": "GeometryNodeStoreNamedAttribute",
+      "props": {
+        "location_absolute": "<Vector (1780.7106, -25.8969)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "GeometryNodeStoreNamedAttribute",
+        "bl_label": "Store Named Attribute",
+        "bl_description": "Store the result of a field on a geometry as an attribute with the specified name",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "data_type": "FLOAT_VECTOR",
+        "domain": "POINT"
+      },
+      "inputs": [
+        {
+          "name": "Geometry",
+          "identifier": "Geometry",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        },
+        {
+          "name": "Selection",
+          "identifier": "Selection",
+          "socket_type": "NodeSocketBool",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": true
+        },
+        {
+          "name": "Name",
+          "identifier": "Name",
+          "socket_type": "NodeSocketString",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": "headRight"
+        },
+        {
+          "name": "Value",
+          "identifier": "Value",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Geometry",
+          "identifier": "Geometry",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "name": "转接点.002",
+      "label": "",
+      "type": "NodeReroute",
+      "props": {
+        "location_absolute": "<Vector (772.3088, -355.0109)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "NodeReroute",
+        "bl_label": "Reroute",
+        "bl_description": "A single-socket organization tool that supports one input and multiple outputs",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "socket_idname": "NodeSocketVector"
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "identifier": "Input",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "identifier": "Output",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Vector Math.006",
+      "label": "",
+      "type": "ShaderNodeVectorMath",
+      "props": {
+        "location_absolute": "<Vector (1802.2480, -869.7291)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "ShaderNodeVectorMath",
+        "bl_label": "Vector Math",
+        "bl_description": "Perform vector math operation",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "operation": "ADD"
+      },
+      "inputs": [
+        {
+          "name": "Vector",
+          "identifier": "Vector",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Vector",
+          "identifier": "Vector_001",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Vector",
+          "identifier": "Vector_002",
+          "socket_type": "NodeSocketVector",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Scale",
+          "identifier": "Scale",
+          "socket_type": "NodeSocketFloat",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Vector",
+          "identifier": "Vector",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        },
+        {
+          "name": "Value",
+          "identifier": "Value",
+          "socket_type": "NodeSocketFloat",
+          "enabled": false,
+          "is_linked": false,
+          "hide": false,
+          "default_value": 0.0
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "name": "组输出",
+      "label": "",
+      "type": "NodeGroupOutput",
+      "props": {
+        "location_absolute": "<Vector (2708.3901, -398.3278)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "NodeGroupOutput",
+        "bl_label": "Group Output",
+        "bl_description": "Output data from inside of a node group",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 80.0,
+        "bl_width_max": 400.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "is_active_output": true
+      },
+      "inputs": [
+        {
+          "name": "几何数据",
+          "identifier": "Output_1",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        },
+        {
+          "name": "",
+          "identifier": "__extend__",
+          "socket_type": "NodeSocketVirtual",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "id": 20,
+      "name": "存储已命名属性.003",
+      "label": "",
+      "type": "GeometryNodeStoreNamedAttribute",
+      "props": {
+        "location_absolute": "<Vector (2300.1550, -299.0160)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "GeometryNodeStoreNamedAttribute",
+        "bl_label": "Store Named Attribute",
+        "bl_description": "Store the result of a field on a geometry as an attribute with the specified name",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "data_type": "FLOAT_VECTOR",
+        "domain": "POINT"
+      },
+      "inputs": [
+        {
+          "name": "Geometry",
+          "identifier": "Geometry",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        },
+        {
+          "name": "Selection",
+          "identifier": "Selection",
+          "socket_type": "NodeSocketBool",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": true
+        },
+        {
+          "name": "Name",
+          "identifier": "Name",
+          "socket_type": "NodeSocketString",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": "headCenter"
+        },
+        {
+          "name": "Value",
+          "identifier": "Value",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Geometry",
+          "identifier": "Geometry",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "name": "存储已命名属性.002",
+      "label": "",
+      "type": "GeometryNodeStoreNamedAttribute",
+      "props": {
+        "location_absolute": "<Vector (2079.2251, -161.8275)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "GeometryNodeStoreNamedAttribute",
+        "bl_label": "Store Named Attribute",
+        "bl_description": "Store the result of a field on a geometry as an attribute with the specified name",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "data_type": "FLOAT_VECTOR",
+        "domain": "POINT"
+      },
+      "inputs": [
+        {
+          "name": "Geometry",
+          "identifier": "Geometry",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        },
+        {
+          "name": "Selection",
+          "identifier": "Selection",
+          "socket_type": "NodeSocketBool",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": true
+        },
+        {
+          "name": "Name",
+          "identifier": "Name",
+          "socket_type": "NodeSocketString",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": "headUp"
+        },
+        {
+          "name": "Value",
+          "identifier": "Value",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Geometry",
+          "identifier": "Geometry",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "name": "切换",
+      "label": "",
+      "type": "GeometryNodeSwitch",
+      "props": {
+        "location_absolute": "<Vector (2548.1956, -538.4775)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "GeometryNodeSwitch",
+        "bl_label": "Switch",
+        "bl_description": "Switch between two inputs",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "input_type": "GEOMETRY"
+      },
+      "inputs": [
+        {
+          "name": "Switch",
+          "identifier": "Switch",
+          "socket_type": "NodeSocketBool",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": false
+        },
+        {
+          "name": "False",
+          "identifier": "False",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        },
+        {
+          "name": "True",
+          "identifier": "True",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Output",
+          "identifier": "Output",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "name": "存储已命名属性.004",
+      "label": "",
+      "type": "GeometryNodeStoreNamedAttribute",
+      "props": {
+        "location_absolute": "<Vector (2228.8528, -718.4595)>",
+        "warning_propagation": "ALL",
+        "use_custom_color": false,
+        "color": "<Color (r=0.6080, g=0.6080, b=0.6080)>",
+        "show_options": true,
+        "show_preview": false,
+        "show_texture": false,
+        "bl_idname": "GeometryNodeStoreNamedAttribute",
+        "bl_label": "Store Named Attribute",
+        "bl_description": "Store the result of a field on a geometry as an attribute with the specified name",
+        "bl_icon": "NONE",
+        "bl_width_default": 140.0,
+        "bl_width_min": 100.0,
+        "bl_width_max": 700.0,
+        "bl_height_default": 100.0,
+        "bl_height_min": 30.0,
+        "bl_height_max": 30.0,
+        "data_type": "FLOAT_VECTOR",
+        "domain": "POINT"
+      },
+      "inputs": [
+        {
+          "name": "Geometry",
+          "identifier": "Geometry",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        },
+        {
+          "name": "Selection",
+          "identifier": "Selection",
+          "socket_type": "NodeSocketBool",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": true
+        },
+        {
+          "name": "Name",
+          "identifier": "Name",
+          "socket_type": "NodeSocketString",
+          "enabled": true,
+          "is_linked": false,
+          "hide": false,
+          "default_value": "headForward"
+        },
+        {
+          "name": "Value",
+          "identifier": "Value",
+          "socket_type": "NodeSocketVector",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false,
+          "default_value": [
+            "0.0",
+            "0.0",
+            "0.0"
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Geometry",
+          "identifier": "Geometry",
+          "socket_type": "NodeSocketGeometry",
+          "enabled": true,
+          "is_linked": true,
+          "hide": false
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from_id": 4,
+      "from_node": "物体信息.001",
+      "from_socket": "Location",
+      "to_id": 9,
+      "to_node": "Vector Math",
+      "to_socket": "Vector"
+    },
+    {
+      "from_id": 5,
+      "from_node": "物体信息",
+      "from_socket": "Location",
+      "to_id": 9,
+      "to_node": "Vector Math",
+      "to_socket": "Vector_001"
+    },
+    {
+      "from_id": 9,
+      "from_node": "Vector Math",
+      "from_socket": "Vector",
+      "to_id": 10,
+      "to_node": "Vector Math.001",
+      "to_socket": "Vector"
+    },
+    {
+      "from_id": 6,
+      "from_node": "物体信息.002",
+      "from_socket": "Location",
+      "to_id": 7,
+      "to_node": "Vector Math.002",
+      "to_socket": "Vector"
+    },
+    {
+      "from_id": 5,
+      "from_node": "物体信息",
+      "from_socket": "Location",
+      "to_id": 7,
+      "to_node": "Vector Math.002",
+      "to_socket": "Vector_001"
+    },
+    {
+      "from_id": 7,
+      "from_node": "Vector Math.002",
+      "from_socket": "Vector",
+      "to_id": 8,
+      "to_node": "Vector Math.003",
+      "to_socket": "Vector"
+    },
+    {
+      "from_id": 10,
+      "from_node": "Vector Math.001",
+      "from_socket": "Vector",
+      "to_id": 13,
+      "to_node": "转接点",
+      "to_socket": "Input"
+    },
+    {
+      "from_id": 8,
+      "from_node": "Vector Math.003",
+      "from_socket": "Vector",
+      "to_id": 15,
+      "to_node": "转接点.001",
+      "to_socket": "Input"
+    },
+    {
+      "from_id": 13,
+      "from_node": "转接点",
+      "from_socket": "Output",
+      "to_id": 11,
+      "to_node": "Vector Math.004",
+      "to_socket": "Vector"
+    },
+    {
+      "from_id": 15,
+      "from_node": "转接点.001",
+      "from_socket": "Output",
+      "to_id": 11,
+      "to_node": "Vector Math.004",
+      "to_socket": "Vector_001"
+    },
+    {
+      "from_id": 11,
+      "from_node": "Vector Math.004",
+      "from_socket": "Vector",
+      "to_id": 12,
+      "to_node": "Vector Math.005",
+      "to_socket": "Vector"
+    },
+    {
+      "from_id": 12,
+      "from_node": "Vector Math.005",
+      "from_socket": "Vector",
+      "to_id": 17,
+      "to_node": "转接点.002",
+      "to_socket": "Input"
+    },
+    {
+      "from_id": 3,
+      "from_node": "组输入",
+      "from_socket": "Input_0",
+      "to_id": 14,
+      "to_node": "存储已命名属性",
+      "to_socket": "Geometry"
+    },
+    {
+      "from_id": 13,
+      "from_node": "转接点",
+      "from_socket": "Output",
+      "to_id": 14,
+      "to_node": "存储已命名属性",
+      "to_socket": "Value"
+    },
+    {
+      "from_id": 14,
+      "from_node": "存储已命名属性",
+      "from_socket": "Geometry",
+      "to_id": 16,
+      "to_node": "存储已命名属性.001",
+      "to_socket": "Geometry"
+    },
+    {
+      "from_id": 15,
+      "from_node": "转接点.001",
+      "from_socket": "Output",
+      "to_id": 16,
+      "to_node": "存储已命名属性.001",
+      "to_socket": "Value"
+    },
+    {
+      "from_id": 16,
+      "from_node": "存储已命名属性.001",
+      "from_socket": "Geometry",
+      "to_id": 21,
+      "to_node": "存储已命名属性.002",
+      "to_socket": "Geometry"
+    },
+    {
+      "from_id": 17,
+      "from_node": "转接点.002",
+      "from_socket": "Output",
+      "to_id": 21,
+      "to_node": "存储已命名属性.002",
+      "to_socket": "Value"
+    },
+    {
+      "from_id": 5,
+      "from_node": "物体信息",
+      "from_socket": "Location",
+      "to_id": 20,
+      "to_node": "存储已命名属性.003",
+      "to_socket": "Value"
+    },
+    {
+      "from_id": 3,
+      "from_node": "组输入",
+      "from_socket": "Socket_0",
+      "to_id": 5,
+      "to_node": "物体信息",
+      "to_socket": "Object"
+    },
+    {
+      "from_id": 3,
+      "from_node": "组输入",
+      "from_socket": "Socket_2",
+      "to_id": 4,
+      "to_node": "物体信息.001",
+      "to_socket": "Object"
+    },
+    {
+      "from_id": 3,
+      "from_node": "组输入",
+      "from_socket": "Socket_3",
+      "to_id": 6,
+      "to_node": "物体信息.002",
+      "to_socket": "Object"
+    },
+    {
+      "from_id": 21,
+      "from_node": "存储已命名属性.002",
+      "from_socket": "Geometry",
+      "to_id": 20,
+      "to_node": "存储已命名属性.003",
+      "to_socket": "Geometry"
+    },
+    {
+      "from_id": 3,
+      "from_node": "组输入",
+      "from_socket": "Socket_4",
+      "to_id": 22,
+      "to_node": "切换",
+      "to_socket": "Switch"
+    },
+    {
+      "from_id": 20,
+      "from_node": "存储已命名属性.003",
+      "from_socket": "Geometry",
+      "to_id": 22,
+      "to_node": "切换",
+      "to_socket": "False"
+    },
+    {
+      "from_id": 3,
+      "from_node": "组输入",
+      "from_socket": "Input_0",
+      "to_id": 23,
+      "to_node": "存储已命名属性.004",
+      "to_socket": "Geometry"
+    },
+    {
+      "from_id": 23,
+      "from_node": "存储已命名属性.004",
+      "from_socket": "Geometry",
+      "to_id": 22,
+      "to_node": "切换",
+      "to_socket": "True"
+    },
+    {
+      "from_id": 22,
+      "from_node": "切换",
+      "from_socket": "Output",
+      "to_id": 19,
+      "to_node": "组输出",
+      "to_socket": "Output_1"
+    },
+    {
+      "from_id": 13,
+      "from_node": "转接点",
+      "from_socket": "Output",
+      "to_id": 23,
+      "to_node": "存储已命名属性.004",
+      "to_socket": "Value"
+    }
+  ]
+}
