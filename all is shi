@@ -1,0 +1,843 @@
+为什么这比“扫描 screen”可靠
+
+你现在的扫描逻辑会在下面场景失真（你截图正好满足）：
+
+同一个 screen 里同时存在多个 NODE_EDITOR（你有 Compositor 的 Node Editor + Shader 的 Node Editor）
+
+你点的是右侧 Shader 节点面板，但 screen.areas 的第一个 NODE_EDITOR 可能是左侧 Compositor Node Editor
+
+用 context.space_data 就不会错，因为它来自“按钮所属 area 的上下文”。
+
+旧版
+def find_node_editor_tree(context) -> bpy.types.NodeTree:
+    """
+    取当前屏幕第一个 Node Editor 的 edit_tree（进入 Group 时也正确）
+    若你想更严格（比如只要 ShaderNodeTree），可加 tree_type 过滤。
+    """
+    screen = context.window.screen
+    for area in screen.areas:
+        if area.type != 'NODE_EDITOR':
+            continue
+        space = area.spaces.active
+        edit_tree = getattr(space, "edit_tree", None)
+        node_tree = getattr(space, "node_tree", None)
+        t = edit_tree or node_tree
+        if t is not None:
+            return t
+    return None
+
+
+二版
+def find_node_editor_tree(context) -> bpy.types.NodeTree:
+    """
+    优先锁定“触发 operator 的那个 Node Editor space”，
+    只有在缺失该上下文时才 fallback 扫屏幕。
+    """
+
+    # ---- 1) 强绑定：按钮来自 NODE_EDITOR 面板时，这里最准 ----
+    area = getattr(context, "area", None)
+    space = getattr(context, "space_data", None)
+
+    if area is not None and area.type == 'NODE_EDITOR' and space is not None:
+        t = getattr(space, "edit_tree", None) or getattr(space, "node_tree", None)
+        if t is not None:
+            return t
+
+    # ---- 2) fallback：某些触发方式（搜索菜单/快捷键）可能没有 area/space ----
+    screen = context.window.screen
+    for a in screen.areas:
+        if a.type != 'NODE_EDITOR':
+            continue
+        sp = a.spaces.active
+        t = getattr(sp, "edit_tree", None) or getattr(sp, "node_tree", None)
+        if t is not None:
+            return t
+
+    return None
+
+
+
+这两版是完全的狗shi。-----错了----还是goushi√
+
+find_node_editor_tree 优先用 space.path
+把“当前层级”这件事从 edit_tree 改为：
+若 space.path 非空：返回 space.path[-1].node_tree（当前层）
+否则退回 space.edit_tree
+再退回 space.node_tree
+理由：path 明确是“到当前编辑树的路径”，其末尾语义更直接。
+
+
+三版--也是shi了
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+def find_node_editor_tree(context):
+    """
+    从“触发按钮的那个 Node Editor”上，可靠地取到当前可见的 NodeTree。
+
+    ----------------------------
+    关键 API / 类型定义（Blender Python RNA）
+    ----------------------------
+
+    1) context.area : bpy.types.Area | None
+       - 当前 Operator 执行时的“触发区域”（你点按钮所在的区域）
+       - 对 Node Editor 来说：context.area.type == 'NODE_EDITOR'
+       - 典型坑：你如果在别的区域触发 Operator（比如 3D View 的菜单/快捷键），这里就不是 NODE_EDITOR
+
+    2) context.space_data : bpy.types.Space | None
+       - 当前 Operator 执行时的“触发 Space”（area 内当前激活的 space）
+       - 当 area.type == 'NODE_EDITOR' 时，space_data 实际类型为：
+         bpy.types.SpaceNodeEditor（在 RNA 中也常被称为 SpaceNodeEditor）
+       - 关键字段：
+         - space.tree_type : str
+           * 'ShaderNodeTree' / 'CompositorNodeTree' / 'GeometryNodeTree'
+           * 注意：Shader/Compositor/GN 在 Area 层级都同样是 'NODE_EDITOR'，区分只靠 tree_type
+         - space.node_tree : bpy.types.NodeTree | None
+           * 当前显示的根树（或 pinned 的树）
+         - space.edit_tree : bpy.types.NodeTree | None
+           * “进入 Group 后”的当前编辑子树（你看到的那一层）
+           * 你在节点组内部点 Export 时，必须优先用 edit_tree
+
+    3) bpy.types.NodeTree
+       - node_tree.nodes / node_tree.links 就是你要遍历导出的数据
+
+    ----------------------------
+    策略说明
+    ----------------------------
+    - 强绑定：优先只取 context.area + context.space_data 对应的树（也就是“你点击按钮的那个面板”）
+    - 不扫屏：默认不扫描 screen.areas（因为那会把别的 Node Editor 的树误当成目标）
+    - 若当前 space 没有 tree（None），直接返回 None，让上层报错提示用户：
+      “当前 Node Editor 没有可导出的 NodeTree（可能没开 Use Nodes / 没有绑定材质/合成树 / 等）”
+
+    返回：
+      bpy.types.NodeTree | None
+    """
+
+    # 1) 必须确认本次执行上下文确实来自 Node Editor 区域
+    area = getattr(context, "area", None)          # bpy.types.Area | None
+    space = getattr(context, "space_data", None)   # bpy.types.SpaceNodeEditor | None
+
+    if area is None or space is None:
+        return None
+
+    # Area.type: e.g. 'VIEW_3D', 'NODE_EDITOR', 'IMAGE_EDITOR', ...
+    if getattr(area, "type", None) != 'NODE_EDITOR':
+        return None
+
+    # 2) 进入 Group 时，edit_tree 才是“当前可见/可编辑”的那一层
+    edit_tree = getattr(space, "edit_tree", None)  # bpy.types.NodeTree | None
+    if edit_tree is not None:
+        return edit_tree
+
+    # 3) 否则回退到 node_tree（根树 / pinned 树）
+    node_tree = getattr(space, "node_tree", None)  # bpy.types.NodeTree | None
+    if node_tree is not None:
+        return node_tree
+
+    # 4) 当前 Node Editor 没有树：不要扫屏找别的 Node Editor（那会导错）
+    return None
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+这个脚本导不出子树的信息
+
+
+bl_info = {
+    "name": "Node Tree JSON Exporter (AI Schema)",
+    "author": "ChatGPT",
+    "version": (1, 0, 0),
+    "blender": (5, 0, 0),
+    "location": "Node Editor > Sidebar (N) > Node JSON",
+    "description": "Export current Node Editor node tree (edit_tree) to compact AI-friendly JSON",
+    "category": "Node",
+}
+
+import bpy
+import json
+from pathlib import Path
+from bpy.props import (
+    StringProperty,
+    BoolProperty,
+)
+
+# ===== params 白名单：只保留高信息密度字段 =====
+PARAM_WHITELIST = {
+    "operation", "domain", "data_type", "input_type", "transform_space",
+    "mode", "interpolation", "clamp", "axis",
+    "use_clamp", "space", "coordinate_space",
+}
+
+SCHEMA_NAME = "blender-nodes-ai@1"  # 你之前一直沿用这个 schema 名字；材质/合成也可复用
+
+
+# ===== JSON 兜底：序列化 Blender / mathutils 类型 =====
+def to_json_default(obj):
+    try:
+        if hasattr(obj, "__iter__") and not isinstance(obj, (str, bytes)):
+            return [to_json_default(x) for x in list(obj)]
+    except Exception:
+        pass
+
+    try:
+        if hasattr(obj, "name"):
+            return obj.name
+    except Exception:
+        pass
+
+    return str(obj)
+
+
+def socket_type(s):
+    return (
+        getattr(s, "bl_socket_idname", None) or
+        getattr(s, "bl_idname", None) or
+        getattr(s, "type", None) or
+        type(s).__name__
+    )
+
+
+def abs_node_pos(n):
+    """
+    Node Editor 的“绝对位置”：
+    node.location 对 parent frame 可能是相对值
+    abs = 自己 location + 所有祖先 frame 的 location 累加
+    """
+    x = float(getattr(n.location, "x", 0.0))
+    y = float(getattr(n.location, "y", 0.0))
+    p = getattr(n, "parent", None)
+    while p is not None:
+        try:
+            x += float(p.location.x)
+            y += float(p.location.y)
+        except Exception:
+            break
+        p = getattr(p, "parent", None)
+    return [x, y]
+
+
+def dump_socket(s, is_input: bool, include_socket_name: bool):
+    d = {
+        "identifier": getattr(s, "identifier", s.name),
+        "socket_type": socket_type(s),
+    }
+    if include_socket_name:
+        d["name"] = s.name
+
+    # default_value：只对输入、且未连接时保留
+    if is_input and hasattr(s, "default_value") and not getattr(s, "is_linked", False):
+        try:
+            d["default_value"] = s.default_value
+        except Exception:
+            pass
+
+    return d
+
+
+def dump_node_params(n):
+    params = {}
+    for key in PARAM_WHITELIST:
+        try:
+            if hasattr(n, key):
+                params[key] = getattr(n, key)
+        except Exception:
+            pass
+    return params
+
+
+def export_frames_block(node_tree, export_abs_pos: bool):
+    frames = [n for n in node_tree.nodes if n.bl_idname == "NodeFrame"]
+    if not frames:
+        return []
+
+    children_nodes_map = {f: [] for f in frames}
+    children_frames_map = {f: [] for f in frames}
+
+    for n in node_tree.nodes:
+        p = getattr(n, "parent", None)
+        if p is None:
+            continue
+        if p in children_nodes_map:
+            children_nodes_map[p].append(n.name)
+
+    for f in frames:
+        pf = getattr(f, "parent", None)
+        if pf is not None and getattr(pf, "bl_idname", "") == "NodeFrame":
+            if pf in children_frames_map:
+                children_frames_map[pf].append(f.name)
+
+    out = []
+    for f in frames:
+        fd = {
+            "name": f.name,
+            "label": f.label or "",
+            "parent_frame": getattr(getattr(f, "parent", None), "name", None),
+            "children_nodes": children_nodes_map.get(f, []),
+            "child_frames": children_frames_map.get(f, []),
+        }
+        if export_abs_pos:
+            fd["pos"] = abs_node_pos(f)
+        out.append(fd)
+
+    return out
+
+
+def resolve_output_dir(output_dir: str) -> Path:
+    if output_dir:
+        try:
+            p = Path(output_dir)
+            p.mkdir(parents=True, exist_ok=True)
+            return p
+        except Exception:
+            pass
+    return Path(bpy.path.abspath("//"))
+
+
+def find_node_editor_tree(context):
+    area = getattr(context, "area", None)
+    space = getattr(context, "space_data", None)
+
+    if area is None or space is None:
+        return None
+    if getattr(area, "type", None) != 'NODE_EDITOR':
+        return None
+
+    # 1) 最可靠：path 最后一项就是当前正在编辑/显示的那一层
+    path = getattr(space, "path", None)
+    if path and len(path) > 0:
+        nt = getattr(path[-1], "node_tree", None)
+        if nt is not None:
+            return nt
+
+    # 2) 回退：edit_tree（某些情况下仍可用）
+    edit_tree = getattr(space, "edit_tree", None)
+    if edit_tree is not None:
+        return edit_tree
+
+    # 3) 再回退：node_tree（根树 / pinned 树）
+    node_tree = getattr(space, "node_tree", None)
+    if node_tree is not None:
+        return node_tree
+
+    return None
+
+
+
+
+
+
+def export_node_tree_to_json(node_tree, out_path: Path,
+                            export_abs_pos: bool,
+                            export_frames: bool,
+                            include_socket_name: bool,
+                            include_node_label: bool):
+    nodes_out = []
+    for n in node_tree.nodes:
+        nd = {
+            "name": n.name,
+            "type": n.bl_idname,
+            "params": dump_node_params(n),
+            "inputs": [dump_socket(s, True, include_socket_name) for s in n.inputs],
+            "outputs": [dump_socket(s, False, include_socket_name) for s in n.outputs],
+        }
+        if include_node_label:
+            nd["label"] = n.label or ""
+        if export_abs_pos:
+            nd["pos"] = abs_node_pos(n)
+        nodes_out.append(nd)
+
+    links_out = []
+    for l in node_tree.links:
+        links_out.append({
+            "from_node": l.from_node.name,
+            "from_socket": getattr(l.from_socket, "identifier", l.from_socket.name),
+            "to_node": l.to_node.name,
+            "to_socket": getattr(l.to_socket, "identifier", l.to_socket.name),
+        })
+
+    data = {
+        "schema": SCHEMA_NAME,
+        "node_tree_name": node_tree.name,
+        "nodes": nodes_out,
+        "links": links_out,
+    }
+
+    if export_frames:
+        data["frames"] = export_frames_block(node_tree, export_abs_pos)
+
+    out_path.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2, default=to_json_default),
+        encoding="utf-8"
+    )
+
+
+# ========= Addon Settings =========
+
+class NTJE_Preferences(bpy.types.AddonPreferences):
+    bl_idname = __name__
+
+    output_dir: StringProperty(
+        name="Output Directory",
+        description="If empty or invalid, fallback to the .blend directory",
+        default="",
+        subtype='DIR_PATH',
+    )
+    file_suffix: StringProperty(
+        name="File Suffix",
+        description="Output filename suffix",
+        default="node_export",
+    )
+
+    export_abs_pos: BoolProperty(
+        name="Export Abs Position",
+        default=True,
+    )
+    export_frames: BoolProperty(
+        name="Export Frames Block",
+        default=True,
+    )
+    include_socket_name: BoolProperty(
+        name="Include Socket Name",
+        default=False,
+    )
+    include_node_label: BoolProperty(
+        name="Include Node Label",
+        default=False,
+    )
+
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self, "output_dir")
+        layout.prop(self, "file_suffix")
+        layout.separator()
+        layout.prop(self, "export_abs_pos")
+        layout.prop(self, "export_frames")
+        layout.prop(self, "include_socket_name")
+        layout.prop(self, "include_node_label")
+
+
+class NODE_OT_export_json_ai_schema(bpy.types.Operator):
+    bl_idname = "node.export_json_ai_schema"
+    bl_label = "Export Node Tree JSON"
+    bl_description = "Export current Node Editor's node tree (edit_tree) to JSON"
+    bl_options = {'REGISTER'}
+
+    def execute(self, context):
+        prefs = context.preferences.addons[__name__].preferences
+
+        node_tree = find_node_editor_tree(context)
+        if node_tree is None:
+            self.report({'ERROR'}, "No Node Editor node tree found. Open a Node Editor/Shader/Compositor and ensure a tree is visible.")
+            return {'CANCELLED'}
+
+        out_dir = resolve_output_dir(prefs.output_dir)
+        suffix = prefs.file_suffix.strip()
+        fname = f"{node_tree.name}_{suffix}.json" if suffix else f"{node_tree.name}.json"
+        out_path = out_dir / fname
+
+        try:
+            export_node_tree_to_json(
+                node_tree, out_path,
+                export_abs_pos=prefs.export_abs_pos,
+                export_frames=prefs.export_frames,
+                include_socket_name=prefs.include_socket_name,
+                include_node_label=prefs.include_node_label,
+            )
+        except Exception as e:
+            self.report({'ERROR'}, f"Export failed: {e}")
+            return {'CANCELLED'}
+
+        self.report({'INFO'}, f"Exported: {str(out_path)}")
+        return {'FINISHED'}
+
+
+class NODE_PT_node_json_exporter_panel(bpy.types.Panel):
+    bl_label = "Node JSON Export"
+    bl_idname = "NODE_PT_node_json_exporter_panel"
+    bl_space_type = 'NODE_EDITOR'
+    bl_region_type = 'UI'
+    bl_category = "Node JSON"
+
+    def draw(self, context):
+        layout = self.layout
+        prefs = context.preferences.addons[__name__].preferences
+
+        col = layout.column(align=True)
+        col.label(text="Export current visible node tree:")
+        col.operator("node.export_json_ai_schema", icon='EXPORT')
+
+        layout.separator()
+        layout.label(text="Settings (in Add-on Preferences):")
+        layout.prop(prefs, "export_abs_pos")
+        layout.prop(prefs, "export_frames")
+        layout.prop(prefs, "include_socket_name")
+        layout.prop(prefs, "include_node_label")
+
+
+classes = (
+    NTJE_Preferences,
+    NODE_OT_export_json_ai_schema,
+    NODE_PT_node_json_exporter_panel,
+)
+
+def register():
+    for c in classes:
+        bpy.utils.register_class(c)
+
+def unregister():
+    for c in reversed(classes):
+        bpy.utils.unregister_class(c)
+
+if __name__ == "__main__":
+    register()
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+bl_info = {
+    "name": "Node Tree JSON Exporter (AI Schema)",
+    "author": "ChatGPT",
+    "version": (1, 0, 0),
+    "blender": (5, 0, 0),
+    "location": "Node Editor > Sidebar (N) > Node JSON",
+    "description": "Export current Node Editor node tree (edit_tree) to compact AI-friendly JSON",
+    "category": "Node",
+}
+
+import bpy
+import json
+from pathlib import Path
+from bpy.props import (
+    StringProperty,
+    BoolProperty,
+)
+
+# ===== params 白名单：只保留高信息密度字段 =====
+PARAM_WHITELIST = {
+    "operation", "domain", "data_type", "input_type", "transform_space",
+    "mode", "interpolation", "clamp", "axis",
+    "use_clamp", "space", "coordinate_space",
+}
+
+SCHEMA_NAME = "blender-nodes-ai@1"  # 你之前一直沿用这个 schema 名字；材质/合成也可复用
+
+
+# ===== JSON 兜底：序列化 Blender / mathutils 类型 =====
+def to_json_default(obj):
+    try:
+        if hasattr(obj, "__iter__") and not isinstance(obj, (str, bytes)):
+            return [to_json_default(x) for x in list(obj)]
+    except Exception:
+        pass
+
+    try:
+        if hasattr(obj, "name"):
+            return obj.name
+    except Exception:
+        pass
+
+    return str(obj)
+
+
+def socket_type(s):
+    return (
+        getattr(s, "bl_socket_idname", None) or
+        getattr(s, "bl_idname", None) or
+        getattr(s, "type", None) or
+        type(s).__name__
+    )
+
+
+def abs_node_pos(n):
+    """
+    Node Editor 的“绝对位置”：
+    node.location 对 parent frame 可能是相对值
+    abs = 自己 location + 所有祖先 frame 的 location 累加
+    """
+    x = float(getattr(n.location, "x", 0.0))
+    y = float(getattr(n.location, "y", 0.0))
+    p = getattr(n, "parent", None)
+    while p is not None:
+        try:
+            x += float(p.location.x)
+            y += float(p.location.y)
+        except Exception:
+            break
+        p = getattr(p, "parent", None)
+    return [x, y]
+
+
+def dump_socket(s, is_input: bool, include_socket_name: bool):
+    d = {
+        "identifier": getattr(s, "identifier", s.name),
+        "socket_type": socket_type(s),
+    }
+    if include_socket_name:
+        d["name"] = s.name
+
+    # default_value：只对输入、且未连接时保留
+    if is_input and hasattr(s, "default_value") and not getattr(s, "is_linked", False):
+        try:
+            d["default_value"] = s.default_value
+        except Exception:
+            pass
+
+    return d
+
+
+def dump_node_params(n):
+    params = {}
+    for key in PARAM_WHITELIST:
+        try:
+            if hasattr(n, key):
+                params[key] = getattr(n, key)
+        except Exception:
+            pass
+    return params
+
+
+def export_frames_block(node_tree, export_abs_pos: bool):
+    frames = [n for n in node_tree.nodes if n.bl_idname == "NodeFrame"]
+    if not frames:
+        return []
+
+    children_nodes_map = {f: [] for f in frames}
+    children_frames_map = {f: [] for f in frames}
+
+    for n in node_tree.nodes:
+        p = getattr(n, "parent", None)
+        if p is None:
+            continue
+        if p in children_nodes_map:
+            children_nodes_map[p].append(n.name)
+
+    for f in frames:
+        pf = getattr(f, "parent", None)
+        if pf is not None and getattr(pf, "bl_idname", "") == "NodeFrame":
+            if pf in children_frames_map:
+                children_frames_map[pf].append(f.name)
+
+    out = []
+    for f in frames:
+        fd = {
+            "name": f.name,
+            "label": f.label or "",
+            "parent_frame": getattr(getattr(f, "parent", None), "name", None),
+            "children_nodes": children_nodes_map.get(f, []),
+            "child_frames": children_frames_map.get(f, []),
+        }
+        if export_abs_pos:
+            fd["pos"] = abs_node_pos(f)
+        out.append(fd)
+
+    return out
+
+
+def resolve_output_dir(output_dir: str) -> Path:
+    if output_dir:
+        try:
+            p = Path(output_dir)
+            p.mkdir(parents=True, exist_ok=True)
+            return p
+        except Exception:
+            pass
+    return Path(bpy.path.abspath("//"))
+
+
+def find_node_editor_tree(context):
+    area = getattr(context, "area", None)
+    space = getattr(context, "space_data", None)
+
+    if area is None or space is None:
+        return None
+    if getattr(area, "type", None) != 'NODE_EDITOR':
+        return None
+
+    # 1) 最可靠：path 最后一项就是当前正在编辑/显示的那一层
+    path = getattr(space, "path", None)
+    if path and len(path) > 0:
+        nt = getattr(path[-1], "node_tree", None)
+        if nt is not None:
+            return nt
+
+    # 2) 回退：edit_tree（某些情况下仍可用）
+    edit_tree = getattr(space, "edit_tree", None)
+    if edit_tree is not None:
+        return edit_tree
+
+    # 3) 再回退：node_tree（根树 / pinned 树）
+    node_tree = getattr(space, "node_tree", None)
+    if node_tree is not None:
+        return node_tree
+
+    return None
+
+
+
+
+
+#一次性组装成一个字典再整体写到同一个文件：
+def export_node_tree_to_json(node_tree, out_path: Path,
+                            export_abs_pos: bool,
+                            export_frames: bool,
+                            include_socket_name: bool,
+                            include_node_label: bool):
+    nodes_out = []
+    for n in node_tree.nodes:
+        nd = {
+            "name": n.name,
+            "type": n.bl_idname,
+            "params": dump_node_params(n),
+            "inputs": [dump_socket(s, True, include_socket_name) for s in n.inputs],
+            "outputs": [dump_socket(s, False, include_socket_name) for s in n.outputs],
+        }
+        if include_node_label:
+            nd["label"] = n.label or ""
+        if export_abs_pos:
+            nd["pos"] = abs_node_pos(n)
+        nodes_out.append(nd)
+
+    links_out = []
+    for l in node_tree.links:
+        links_out.append({
+            "from_node": l.from_node.name,
+            "from_socket": getattr(l.from_socket, "identifier", l.from_socket.name),
+            "to_node": l.to_node.name,
+            "to_socket": getattr(l.to_socket, "identifier", l.to_socket.name),
+        })
+
+    data = {
+        "schema": SCHEMA_NAME,
+        "node_tree_name": node_tree.name,
+        "nodes": nodes_out,
+        "links": links_out,
+    }
+
+    if export_frames:
+        data["frames"] = export_frames_block(node_tree, export_abs_pos)
+
+    out_path.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2, default=to_json_default),
+        encoding="utf-8"
+    )
+
+
+# ========= Addon Settings =========
+
+class NTJE_Preferences(bpy.types.AddonPreferences):
+    bl_idname = __name__
+
+    output_dir: StringProperty(
+        name="Output Directory",
+        description="If empty or invalid, fallback to the .blend directory",
+        default="",
+        subtype='DIR_PATH',
+    )
+    file_suffix: StringProperty(
+        name="File Suffix",
+        description="Output filename suffix",
+        default="node_export",
+    )
+
+    export_abs_pos: BoolProperty(
+        name="Export Abs Position",
+        default=True,
+    )
+    export_frames: BoolProperty(
+        name="Export Frames Block",
+        default=True,
+    )
+    include_socket_name: BoolProperty(
+        name="Include Socket Name",
+        default=False,
+    )
+    include_node_label: BoolProperty(
+        name="Include Node Label",
+        default=False,
+    )
+
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self, "output_dir")
+        layout.prop(self, "file_suffix")
+        layout.separator()
+        layout.prop(self, "export_abs_pos")
+        layout.prop(self, "export_frames")
+        layout.prop(self, "include_socket_name")
+        layout.prop(self, "include_node_label")
+
+
+class NODE_OT_export_json_ai_schema(bpy.types.Operator):
+    bl_idname = "node.export_json_ai_schema"
+    bl_label = "Export Node Tree JSON"
+    bl_description = "Export current Node Editor's node tree (edit_tree) to JSON"
+    bl_options = {'REGISTER'}
+
+    def execute(self, context):
+        prefs = context.preferences.addons[__name__].preferences
+
+        node_tree = find_node_editor_tree(context)
+        if node_tree is None:
+            self.report({'ERROR'}, "No Node Editor node tree found. Open a Node Editor/Shader/Compositor and ensure a tree is visible.")
+            return {'CANCELLED'}
+
+        out_dir = resolve_output_dir(prefs.output_dir)
+        suffix = prefs.file_suffix.strip()
+        fname = f"{node_tree.name}_{suffix}.json" if suffix else f"{node_tree.name}.json"
+        out_path = out_dir / fname
+
+        try:
+            export_node_tree_to_json(
+                node_tree, out_path,
+                export_abs_pos=prefs.export_abs_pos,
+                export_frames=prefs.export_frames,
+                include_socket_name=prefs.include_socket_name,
+                include_node_label=prefs.include_node_label,
+            )
+        except Exception as e:
+            self.report({'ERROR'}, f"Export failed: {e}")
+            return {'CANCELLED'}
+
+        self.report({'INFO'}, f"Exported: {str(out_path)}")
+        return {'FINISHED'}
+
+
+class NODE_PT_node_json_exporter_panel(bpy.types.Panel):
+    bl_label = "Node JSON Export"
+    bl_idname = "NODE_PT_node_json_exporter_panel"
+    bl_space_type = 'NODE_EDITOR'
+    bl_region_type = 'UI'
+    bl_category = "Node JSON"
+
+    def draw(self, context):
+        layout = self.layout
+        prefs = context.preferences.addons[__name__].preferences
+
+        col = layout.column(align=True)
+        col.label(text="Export current visible node tree:")
+        col.operator("node.export_json_ai_schema", icon='EXPORT')
+
+        layout.separator()
+        layout.label(text="Settings (in Add-on Preferences):")
+        layout.prop(prefs, "export_abs_pos")
+        layout.prop(prefs, "export_frames")
+        layout.prop(prefs, "include_socket_name")
+        layout.prop(prefs, "include_node_label")
+
+
+classes = (
+    NTJE_Preferences,
+    NODE_OT_export_json_ai_schema,
+    NODE_PT_node_json_exporter_panel,
+)
+
+def register():
+    for c in classes:
+        bpy.utils.register_class(c)
+
+def unregister():
+    for c in reversed(classes):
+        bpy.utils.unregister_class(c)
+
+if __name__ == "__main__":
+    register()
+
+
+
+
